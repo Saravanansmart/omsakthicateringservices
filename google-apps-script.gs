@@ -19,12 +19,10 @@ var SHEET_NAME = '';           // '' = use the first sheet tab
 var COUPON_PREFIX = 'OMS';
 
 var OFFERS = [
-  { title: '10% OFF',             note: 'on your next catering order' },
-  { title: '5% OFF',              note: 'on orders above ₹15,000' },
-  { title: 'FREE DESSERT',        note: 'counter for up to 50 guests' },
-  { title: 'FREE WELCOME DRINKS', note: 'for your whole event' },
-  { title: '15% OFF',             note: 'on weekday bookings' },
-  { title: 'FREE TASTING',        note: 'session for 4 people' }
+  { title: 'FREE WELCOME DRINK', note: 'for your whole event' },
+  { title: '₹2,000 OFF',         note: 'on orders above ₹2 lakhs' },
+  { title: '₹5,000 OFF',         note: 'on orders above ₹4 lakhs' },
+  { title: '₹10,000 OFF',        note: 'on orders above ₹8 lakhs' }
 ];
 
 function doPost(e) {
