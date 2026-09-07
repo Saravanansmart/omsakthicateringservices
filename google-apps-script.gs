@@ -1,21 +1,22 @@
 /**
- * OM Shakthi Catering — lead capture + unique coupon generator.
+ * Om Sakthi Catering — unified Google Apps Script backend.
  *
- * Receives a mobile number from the landing page, generates a coupon code
- * that is GUARANTEED unique across the sheet (no repeats), picks a random
- * offer, appends [Timestamp, Phone, Coupon, Offer, Note] to the sheet, and
- * returns { ok, coupon, offerTitle, offerNote } to the page.
+ * Handles TWO kinds of submissions into the SAME spreadsheet but
+ * SEPARATE tabs (subsheets):
  *
- * SETUP: see SETUP.md. In short —
- *   1. Open your Google Sheet → Extensions → Apps Script.
- *   2. Delete the sample code, paste this file, Save.
- *   3. Deploy → New deployment → Web app →
- *        Execute as: Me   |   Who has access: Anyone
- *   4. Copy the /exec Web app URL into SCRIPT_URL in index.html.
+ *   1. OFFER page (/offers)  ->  first sheet tab  (phone + unique coupon)
+ *   2. LEAD / enquiry form   ->  "Leads" tab      (full enquiry details)
+ *
+ * The request "type" field decides the route:
+ *   { "type": "lead", name, phone, email, eventType, eventDate, guests, message }
+ *   { "type": "offer", phone }   // or no type -> treated as an offer (back-compat)
+ *
+ * DEPLOY: Extensions -> Apps Script -> paste -> Save ->
+ *   Deploy -> Manage deployments -> edit -> New version -> Deploy
+ *   (keeps the same /exec URL).
  */
 
-// Sheet tab (gid=0 is the first/default tab). Change if you use another tab.
-var SHEET_NAME = '';           // '' = use the first sheet tab
+var LEADS_SHEET   = 'Leads';   // enquiry-form submissions go here
 var COUPON_PREFIX = 'OMS';
 
 var OFFERS = [
@@ -27,26 +28,14 @@ var OFFERS = [
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
-  lock.waitLock(20000); // serialize so two guests can't get the same code
+  lock.waitLock(20000);
   try {
-    var phone = '';
-    try { phone = String((JSON.parse(e.postData.contents) || {}).phone || ''); }
-    catch (err) { phone = String((e.parameter && e.parameter.phone) || ''); }
-    phone = phone.replace(/\D/g, '');
+    var data = {};
+    try { data = JSON.parse(e.postData.contents) || {}; }
+    catch (err) { data = (e && e.parameter) || {}; }
 
-    if (!/^[6-9]\d{9}$/.test(phone)) {
-      return json({ ok: false, error: 'invalid_phone' });
-    }
-
-    var sheet = getSheet_();
-    ensureHeader_(sheet);
-
-    var coupon = uniqueCoupon_(sheet, phone);
-    var offer  = OFFERS[Math.floor(Math.random() * OFFERS.length)];
-
-    sheet.appendRow([new Date(), "'" + phone, coupon, offer.title, offer.note]);
-
-    return json({ ok: true, coupon: coupon, offerTitle: offer.title, offerNote: offer.note });
+    if (String(data.type) === 'lead') return handleLead_(data);
+    return handleOffer_(data);
   } catch (err) {
     return json({ ok: false, error: String(err) });
   } finally {
@@ -54,24 +43,62 @@ function doPost(e) {
   }
 }
 
-// Health check when the URL is opened in a browser.
 function doGet() {
-  return json({ ok: true, service: 'OM Shakthi lead capture' });
+  return json({ ok: true, service: 'Om Sakthi Catering backend' });
 }
 
-function getSheet_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  return SHEET_NAME ? ss.getSheetByName(SHEET_NAME) : ss.getSheets()[0];
+/* ---------------- LEAD / enquiry form ---------------- */
+function handleLead_(data) {
+  var sheet = getOrCreateSheet_(LEADS_SHEET);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Timestamp', 'Name', 'Phone', 'Email', 'Event Type', 'Event Date', 'Guests', 'Message']);
+    sheet.getRange('A1:H1').setFontWeight('bold');
+  }
+
+  var name  = String(data.name  || '').trim();
+  var phone = String(data.phone || '').trim();
+  if (!name || !phone) return json({ ok: false, error: 'missing_fields' });
+
+  sheet.appendRow([
+    new Date(),
+    name,
+    "'" + phone,                       // leading quote keeps the number as text
+    String(data.email     || ''),
+    String(data.eventType || ''),
+    String(data.eventDate || ''),
+    String(data.guests    || ''),
+    String(data.message   || '')
+  ]);
+  return json({ ok: true });
 }
 
-function ensureHeader_(sheet) {
+/* ---------------- OFFER page (phone + unique coupon) ---------------- */
+function handleOffer_(data) {
+  var phone = String(data.phone || '').replace(/\D/g, '');
+  if (!/^[6-9]\d{9}$/.test(phone)) return json({ ok: false, error: 'invalid_phone' });
+
+  var sheet = getFirstSheet_();
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(['Timestamp', 'Phone Number', 'Coupon Code', 'Offer', 'Offer Note']);
     sheet.getRange('A1:E1').setFontWeight('bold');
   }
+
+  var coupon = uniqueCoupon_(sheet, phone);
+  var offer  = OFFERS[Math.floor(Math.random() * OFFERS.length)];
+  sheet.appendRow([new Date(), "'" + phone, coupon, offer.title, offer.note]);
+
+  return json({ ok: true, coupon: coupon, offerTitle: offer.title, offerNote: offer.note });
 }
 
-/** Build a coupon that does not already exist in column C. */
+/* ---------------- helpers ---------------- */
+function getFirstSheet_() {
+  return SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+}
+function getOrCreateSheet_(name) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  return ss.getSheetByName(name) || ss.insertSheet(name);
+}
+
 function uniqueCoupon_(sheet, phone) {
   var used = {};
   var last = sheet.getLastRow();
@@ -80,7 +107,6 @@ function uniqueCoupon_(sheet, phone) {
     for (var i = 0; i < codes.length; i++) used[String(codes[i][0])] = true;
   }
   var last4 = phone.slice(-4);
-  // Try 2-digit suffixes first (keeps the short OMSxxxxNN look), then widen.
   for (var len = 2; len <= 5; len++) {
     var lo = Math.pow(10, len - 1), hi = Math.pow(10, len);
     for (var t = 0; t < 200; t++) {
@@ -88,12 +114,10 @@ function uniqueCoupon_(sheet, phone) {
       if (!used[code]) return code;
     }
   }
-  // Extremely unlikely fallback: timestamp-based, still unique.
   return COUPON_PREFIX + last4 + String(new Date().getTime()).slice(-6);
 }
 
 function json(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
+  return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }

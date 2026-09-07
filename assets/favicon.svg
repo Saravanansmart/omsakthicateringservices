@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Om Sakthi Catering Services favicon">
+  <defs>
+    <linearGradient id="fvTile" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#932828"/>
+      <stop offset="1" stop-color="#6C1717"/>
+    </linearGradient>
+  </defs>
+  <!-- Maroon rounded tile -->
+  <rect x="0" y="0" width="32" height="32" rx="8" fill="url(#fvTile)"/>
+  <!-- Om (Aum) mark -->
+  <g transform="translate(-4.5 3.8) scale(0.28)" stroke-linecap="round" fill="none">
+    <circle cx="65" cy="8" r="4.2" fill="#E8B04A"/>
+    <path d="M43 20 Q 65 36 87 20" stroke="#E8B04A" stroke-width="7.5"/>
+    <path d="M50 30 A 13 11 0 1 1 50 55" stroke="#F3E3C2" stroke-width="8"/>
+    <path d="M50 55 A 16 14 0 1 1 50 84" stroke="#F3E3C2" stroke-width="8"/>
+    <path d="M50 84 C 58 90, 62 82, 67 77" stroke="#F3E3C2" stroke-width="8"/>
+    <circle cx="78" cy="66" r="14" stroke="#F3E3C2" stroke-width="8"/>
+    <path d="M89 55 C 97 49, 100 58, 91 63" stroke="#F3E3C2" stroke-width="7.5"/>
+  </g>
+</svg>
