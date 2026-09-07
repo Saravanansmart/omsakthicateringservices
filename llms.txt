@@ -1,0 +1,17 @@
+# OM Shakthi Catering Services
+
+> Traditional South Indian catering for weddings, receptions, corporate events and house functions, based in Tamil Nadu, India.
+
+This site is a single offer landing page: a visitor enters their mobile number to
+instantly reveal an exclusive discount (a scratch-card coupon) for booking an event.
+
+## Key facts
+- Business: OM Shakthi Catering Services
+- Services: Wedding catering, reception catering, corporate event catering, house function catering
+- Phone / booking: +91 90871 09601
+- WhatsApp: https://wa.me/message/XDDBKSHT3CEVF1
+- Website: https://omsakthicateringservices.in/
+- Coupons revealed on the site are valid for 30 days on one order.
+
+## Pages
+- [Home / Offer page](https://omsakthicateringservices.in/): Enter a mobile number to reveal a catering discount and book via call or WhatsApp.
