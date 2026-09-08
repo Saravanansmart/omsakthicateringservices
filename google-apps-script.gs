@@ -11,6 +11,11 @@
  *   { "type": "lead", name, phone, email, eventType, eventDate, guests, message }
  *   { "type": "offer", phone }   // or no type -> treated as an offer (back-compat)
  *
+ * Both routes reject a repeat submission from a phone number already on
+ * their sheet: nothing new is written, and the response comes back as
+ * { ok: true, duplicate: true, message: "..." } so the page can show a
+ * friendly "already raised" message instead of the normal success state.
+ *
  * DEPLOY: Extensions -> Apps Script -> paste -> Save ->
  *   Deploy -> Manage deployments -> edit -> New version -> Deploy
  *   (keeps the same /exec URL).
@@ -56,8 +61,16 @@ function handleLead_(data) {
   }
 
   var name  = String(data.name  || '').trim();
-  var phone = String(data.phone || '').trim();
+  var phone = String(data.phone || '').replace(/\D/g, '');
   if (!name || !phone) return json({ ok: false, error: 'missing_fields' });
+
+  if (phoneExists_(sheet, 3, phone)) {
+    return json({
+      ok: true,
+      duplicate: true,
+      message: 'Request already raised. Our chefs will reach you shortly.'
+    });
+  }
 
   sheet.appendRow([
     new Date(),
@@ -83,6 +96,14 @@ function handleOffer_(data) {
     sheet.getRange('A1:E1').setFontWeight('bold');
   }
 
+  if (phoneExists_(sheet, 2, phone)) {
+    return json({
+      ok: true,
+      duplicate: true,
+      message: "You've already claimed an offer with this number. Our team will reach out shortly!"
+    });
+  }
+
   var coupon = uniqueCoupon_(sheet, phone);
   var offer  = OFFERS[Math.floor(Math.random() * OFFERS.length)];
   sheet.appendRow([new Date(), "'" + phone, coupon, offer.title, offer.note]);
@@ -97,6 +118,17 @@ function getFirstSheet_() {
 function getOrCreateSheet_(name) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   return ss.getSheetByName(name) || ss.insertSheet(name);
+}
+
+/** True if `phone` (digits only) already appears in column `col` of `sheet`. */
+function phoneExists_(sheet, col, phone) {
+  var last = sheet.getLastRow();
+  if (last <= 1) return false;
+  var values = sheet.getRange(2, col, last - 1, 1).getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (String(values[i][0] || '').replace(/\D/g, '') === phone) return true;
+  }
+  return false;
 }
 
 function uniqueCoupon_(sheet, phone) {

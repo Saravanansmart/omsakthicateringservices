@@ -235,6 +235,10 @@
       margin: 10px 2px 0;
       min-height: 1em;
     }
+    .error.notice{
+      color: var(--primary);
+      font-weight: 600;
+    }
     .btn{
       appearance:none;
       border:0;
@@ -549,10 +553,13 @@
     $("phoneForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const phone = $("phone").value.replace(/[^\d]/g, "");
+      const errEl = $("phoneError");
+      errEl.classList.remove("notice");
       if (!/^[6-9]\d{9}$/.test(phone)) {
-        $("phoneError").textContent = "Please enter a valid 10-digit mobile number.";
+        errEl.textContent = "Please enter a valid 10-digit mobile number.";
         return;
       }
+      errEl.textContent = "";
 
       const btn = $("submitBtn");
       btn.disabled = true;
@@ -568,10 +575,18 @@
 
       btn.disabled = false;
       btn.textContent = original;
+
+      if (result.duplicate) {
+        errEl.classList.add("notice");
+        errEl.textContent = result.message || "You've already claimed an offer with this number. Our team will reach out shortly!";
+        return;
+      }
+
       showReward(result);
     });
 
-    // Post phone to the sheet; server returns the unique coupon + chosen offer.
+    // Post phone to the sheet; server returns the unique coupon + chosen offer,
+    // or flags the number as a duplicate if it has already claimed one.
     async function submitLead(phone) {
       if (!SCRIPT_URL || SCRIPT_URL.startsWith("PASTE_")) {
         console.warn("SCRIPT_URL not set — running in local preview mode (nothing saved to the sheet).");
@@ -584,6 +599,7 @@
       });
       const data = await res.json();
       if (!data || !data.ok) throw new Error("Server error");
+      if (data.duplicate) return { duplicate: true, message: data.message };
       return { coupon: data.coupon, title: data.offerTitle, note: data.offerNote };
     }
 
