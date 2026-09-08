@@ -339,9 +339,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (submitBtn) submitBtn.disabled = true;
       setStatus('Sending your enquiry…', true);
 
-      var done = function (ok) {
+      var done = function (data) {
         if (submitBtn) submitBtn.disabled = false;
-        if (ok) {
+        if (data && data.duplicate) {
+          setStatus(data.message || 'Request already raised. Our chefs will reach you shortly.', true);
+          form.reset();
+        } else if (data && data.ok) {
           setStatus("Thank you! Your enquiry has been received — we'll get back to you within one business day.", true);
           form.reset();
         } else {
@@ -350,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
       };
 
       if (!LEAD_SCRIPT_URL || LEAD_SCRIPT_URL.indexOf('PASTE_') === 0) {
-        done(true); // no endpoint configured — don't block the user
+        done({ ok: true }); // no endpoint configured — don't block the user
         return;
       }
 
@@ -360,8 +363,8 @@ document.addEventListener('DOMContentLoaded', function () {
         body: JSON.stringify(payload)
       })
         .then(function (res) { return res.json(); })
-        .then(function (data) { done(data && data.ok); })
-        .catch(function () { done(false); });
+        .then(function (data) { done(data); })
+        .catch(function () { done(null); });
     });
   }
 
