@@ -1,5 +1,5 @@
 /* ============================================================
-   Om Sakthi Catering Services — main.js
+   Om Shakti Catering Services — main.js
    Dependency-free vanilla JS. All features null-guarded.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', function () {

@@ -1,5 +1,5 @@
 /**
- * Om Sakthi Catering — unified Google Apps Script backend.
+ * Om Shakti Catering — unified Google Apps Script backend.
  *
  * Handles TWO kinds of submissions into the SAME spreadsheet but
  * SEPARATE tabs (subsheets):
@@ -44,7 +44,7 @@ function doPost(e) {
 }
 
 function doGet() {
-  return json({ ok: true, service: 'Om Sakthi Catering backend' });
+  return json({ ok: true, service: 'Om Shakti Catering backend' });
 }
 
 /* ---------------- LEAD / enquiry form ---------------- */
