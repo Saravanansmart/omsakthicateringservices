@@ -35,8 +35,23 @@ where needed, and resampled to 800px wide (`sips --resampleWidth 800`).
 | Hot Bajji & Bonda | hot-bajji-bonda.jpg | Iamalwayshungrie | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Aloo_bonda_2.jpg |
 | Filter Coffee & Tea | filter-coffee-tea.jpg | Triv.rao | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Filter-Coffee.jpg |
 
+## Gallery — "From Our Kitchen & Events" (1200px wide)
+
+| Tile | File | Author | Licence | Source |
+|---|---|---|---|---|
+| Wedding Feast | gallery-wedding-feast.jpg | Sistak | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:A_thali_served_on_banana_leaf_during_a_wedding,_south_India.jpg |
+| Live Counters | gallery-live-dosa-counter.jpg | Mishti Malik | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Coal-fired_Dosa.JPG |
+| Banana-Leaf Sadhya | gallery-banana-leaf-sadhya.jpg | Sreerajsadanand | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Sadya_-_An_art.jpeg |
+| Dessert Table | gallery-dessert-table.jpg | DDohler | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:A_tray_full_of_Indian_sweets_mithai_desserts_c.jpg |
+| Biryani Handi | gallery-biryani-handi.jpg | Kalesh | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Lucknowi_Mutton_Matka_Dum_Biriyani.jpg |
+| Tandoor Grill | gallery-tandoor-grill.jpg | Sumitmalhotra | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Seekh_Kebabs_on_Fire.JPG |
+
+Note: the Wedding Feast photo shows identifiable wedding guests. Licence-wise it is fine, but if a
+faces-free tile is preferred, `File:Onam_Sadya.jpg` (Tinu alby, CC BY-SA 4.0) is a good swap.
+
 Licence texts: CC BY-SA 4.0 https://creativecommons.org/licenses/by-sa/4.0 ·
 CC BY-SA 3.0 https://creativecommons.org/licenses/by-sa/3.0 ·
+CC BY-SA 2.0 https://creativecommons.org/licenses/by-sa/2.0 ·
 CC BY 2.0 https://creativecommons.org/licenses/by/2.0 ·
 CC0 1.0 https://creativecommons.org/publicdomain/zero/1.0/
 
