@@ -18,7 +18,9 @@ The full marketing site for Om Shakti Catering Services, plus a mobile-number-ga
 | `css/styles.css` | Homepage styles. |
 | `js/main.js` | Homepage interactivity (tabs, lightbox, slider, counters, nav, enquiry form). |
 | `offers/index.html` | The offer/scratch-card page — self-contained (HTML/CSS/JS), no build step. |
-| `assets/` | Shared images: logo, favicon, OG cover, hero photo. |
+| `assets/` | Shared images: logo, favicon, OG cover. |
+| `assets/images/` | Menu dish photos (Wikimedia Commons, CC-licensed — see `assets/images/CREDITS.md`). |
+| `credits.html` | Public photo-attribution page, linked from the footer (required by the CC BY-SA licences). |
 | `google-apps-script.gs` | Reference copy of the Google Apps Script backend (already deployed; see below). |
 | `SETUP.md` | Full setup / deployment notes for the offer page's backend. |
 | `robots.txt`, `sitemap.xml`, `llms.txt` | Search engine / AI crawler discovery files. |

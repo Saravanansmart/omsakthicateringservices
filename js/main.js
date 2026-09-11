@@ -242,14 +242,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ---------- 9. GALLERY LIGHTBOX ---------- */
   var lightbox = document.getElementById('lightbox');
-  var lightboxEmoji = document.getElementById('lightboxEmoji');
+  var lightboxPhoto = document.getElementById('lightboxPhoto');
   var lightboxCaption = document.getElementById('lightboxCaption');
   var lightboxClose = document.getElementById('lightboxClose');
   var galleryItems = document.querySelectorAll('.gallery-item');
 
   if (lightbox && galleryItems.length) {
-    function openLightbox(emoji, caption) {
-      if (lightboxEmoji) lightboxEmoji.textContent = emoji;
+    function openLightbox(src, alt, caption) {
+      if (lightboxPhoto) { lightboxPhoto.src = src; lightboxPhoto.alt = alt; }
       if (lightboxCaption) lightboxCaption.textContent = caption;
       lightbox.classList.add('open');
       lightbox.setAttribute('aria-hidden', 'false');
@@ -263,10 +263,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     galleryItems.forEach(function (item) {
       item.addEventListener('click', function () {
-        var emojiEl = item.querySelector('.g-emoji');
-        var emoji = emojiEl ? emojiEl.textContent : '';
+        var photo = item.querySelector('.g-photo');
         var caption = item.getAttribute('data-caption') || '';
-        openLightbox(emoji, caption);
+        openLightbox(photo ? photo.currentSrc || photo.src : '', photo ? photo.alt : '', caption);
       });
     });
 
